@@ -19,7 +19,7 @@ jobs:
   build_test_binaries:
     if: ${{ vars.RUN_FPGA_CI != 'false' }}
     runs-on: [ e2-standard-8-big-disk ]
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       SCCACHE_VERSION: 0.10.0
       SCCACHE_GHA_CACHE_TO: sccache-caliptra-mcu-sw
