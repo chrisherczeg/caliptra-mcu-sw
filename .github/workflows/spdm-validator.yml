@@ -115,7 +115,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: chipsalliance/caliptra-spdm-emu
-          ref: ${{ github.event_name == 'pull_request' && 'refs/pull/2/head' || inputs.spdm_emu_ref }}
+          ref: ${{ github.event_name == 'pull_request' && (github.head_ref == 'spdm-1-4-version-capabilities' && 'refs/pull/4/head' || 'refs/pull/2/head') || inputs.spdm_emu_ref }}
           path: spdm-emu
           submodules: recursive
 
@@ -144,7 +144,7 @@ jobs:
         continue-on-error: true
         env:
           SPDM_VALIDATOR_DIR: ${{ github.workspace }}/spdm-emu/build/bin
-          SPDM_VALIDATOR_TEST_GROUPS: ${{ github.event_name == 'pull_request' && (github.head_ref == 'spdm-validator-targeted' && 'VERSION' || 'VERSION,CAPABILITIES') || inputs.validator_test_groups }}
+          SPDM_VALIDATOR_TEST_GROUPS: ${{ github.event_name == 'pull_request' && (github.head_ref == 'spdm-validator-targeted' && 'VERSION' || github.head_ref == 'spdm-1-4-version-capabilities' && 'VERSION,CAPABILITIES,ALGORITHMS' || 'VERSION,CAPABILITIES') || inputs.validator_test_groups }}
         run: |
           echo "SPDM_NONCE in MCTP stage: ${SPDM_NONCE}"
           echo "SPDM_NONCE length: ${#SPDM_NONCE}"
@@ -199,7 +199,7 @@ jobs:
         continue-on-error: true
         env:
           SPDM_VALIDATOR_DIR: ${{ github.workspace }}/spdm-emu/build/bin
-          SPDM_VALIDATOR_TEST_GROUPS: ${{ github.event_name == 'pull_request' && (github.head_ref == 'spdm-validator-targeted' && 'VERSION' || 'VERSION,CAPABILITIES') || inputs.validator_test_groups }}
+          SPDM_VALIDATOR_TEST_GROUPS: ${{ github.event_name == 'pull_request' && (github.head_ref == 'spdm-validator-targeted' && 'VERSION' || github.head_ref == 'spdm-1-4-version-capabilities' && 'VERSION,CAPABILITIES,ALGORITHMS' || 'VERSION,CAPABILITIES') || inputs.validator_test_groups }}
         run: |
           cargo xtask all-build
           cargo t -p caliptra-mcu-tests-integration -- --test test_doe_spdm_responder_conformance --nocapture  --include-ignored
